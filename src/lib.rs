@@ -310,12 +310,14 @@ impl DeviceHandle {
 
 		let opt_value = match opt.type_ {
 			sys::ValueType::Bool => unsafe { DeviceOptionValue::Bool(*(value_ptr as *const bool)) },
-			sys::ValueType::Int => unsafe { DeviceOptionValue::Int(*(value_ptr as *const i32)) },
+			sys::ValueType::Int => unsafe {
+				DeviceOptionValue::Int(*(value_ptr as *const sys::Int))
+			},
 			sys::ValueType::Fixed => unsafe {
-				DeviceOptionValue::Fixed(*(value_ptr as *const i32))
+				DeviceOptionValue::Fixed(*(value_ptr as *const sys::Fixed))
 			},
 			sys::ValueType::String => unsafe {
-				DeviceOptionValue::String(CStr::from_ptr(value_ptr as *const i8).to_owned())
+				DeviceOptionValue::String(CStr::from_ptr(value_ptr as *const sys::Char).to_owned())
 			},
 			v @ sys::ValueType::Button | v @ sys::ValueType::Group => {
 				panic!("Invalid state. {:?} doesn't represent a value.", v);
@@ -332,9 +334,9 @@ impl DeviceHandle {
 	) -> Result<OptionInfo> {
 		let mut str_vec;
 		let value_ptr = match value {
-			DeviceOptionValue::Bool(ref mut v) => v as *mut bool as *mut i32 as *mut c_void,
-			DeviceOptionValue::Int(ref mut v) => v as *mut i32 as *mut c_void,
-			DeviceOptionValue::Fixed(ref mut v) => v as *mut i32 as *mut c_void,
+			DeviceOptionValue::Bool(ref mut v) => v as *mut bool as *mut sys::Int as *mut c_void,
+			DeviceOptionValue::Int(ref mut v) => v as *mut sys::Int as *mut c_void,
+			DeviceOptionValue::Fixed(ref mut v) => v as *mut sys::Fixed as *mut c_void,
 			DeviceOptionValue::String(str) => {
 				str_vec = str.into_bytes_with_nul();
 				str_vec.as_mut_ptr() as *mut c_void
