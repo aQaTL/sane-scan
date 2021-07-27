@@ -5,7 +5,7 @@ pub mod sys;
 pub use sys::*;
 
 use bitflags::bitflags;
-use log::{debug, info};
+use log::debug;
 use std::ffi::{c_void, CStr, CString};
 use std::fmt::{Debug, Display, Formatter};
 use std::ops::Range;
