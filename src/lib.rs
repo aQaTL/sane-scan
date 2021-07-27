@@ -168,31 +168,13 @@ impl DeviceHandle {
 
 			unsafe {
 				let title = CStr::from_ptr((*option_descriptor).title).to_owned();
-				info!("{:?}", title.to_string_lossy());
 				let name = CStr::from_ptr((*option_descriptor).name).to_owned();
-				info!("\t{:?}", name.to_string_lossy());
 				let desc = CStr::from_ptr((*option_descriptor).desc).to_owned();
-				info!("\t{:?}", desc.to_string_lossy());
 
-				info!(
-					"Type {:?}. Unit {:?}. Size {:?}. Cap {:?}. Constraint type {:?}",
-					(*option_descriptor).type_,
-					(*option_descriptor).unit,
-					(*option_descriptor).size,
-					(*option_descriptor).cap,
-					(*option_descriptor).constraint_type
-				);
 				let constraint = match (*option_descriptor).constraint_type {
 					sys::ConstraintType::None => OptionConstraint::None,
 					sys::ConstraintType::Range => {
 						let range = (*option_descriptor).constraint.range;
-						info!(
-							"\tRange: {}-{}. Quant {}. Steps {}.",
-							(*range).min,
-							(*range).max,
-							(*range).quant,
-							(*range).max / (*range).quant,
-						);
 						OptionConstraint::Range {
 							range: (*range).min..(*range).max,
 							quant: (*range).quant,
@@ -203,7 +185,6 @@ impl DeviceHandle {
 						let list_len = *word_list;
 						let word_list_slice =
 							std::slice::from_raw_parts(word_list.add(1), list_len as usize);
-						info!("\tPossible values: {:?}", word_list_slice);
 						OptionConstraint::WordList(word_list_slice.to_vec())
 					}
 					sys::ConstraintType::StringList => {
@@ -216,7 +197,6 @@ impl DeviceHandle {
 							.iter()
 							.map(|&str_ptr| CStr::from_ptr(str_ptr).to_owned())
 							.collect::<Vec<_>>();
-						info!("\tPossible values: {:?}", string_list_vec);
 						OptionConstraint::StringList(string_list_vec)
 					}
 				};
