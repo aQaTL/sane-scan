@@ -3,6 +3,10 @@ name = "sane-scan"
 version = "0.1.0"
 edition = "2018"
 license = "MIT"
+authors = ["aQaTL <mmsoltys@outlook.com>"]
+description = "Bindings and safe wrapper for SANE"
+repository = "https://github.com/aQaTL/sane-scan"
+keywords = ["scanner"]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
