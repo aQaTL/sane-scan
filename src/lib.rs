@@ -83,10 +83,10 @@ impl Sane {
 				.iter()
 				.copied()
 				.map(|device| {
-					let name = CStr::from_ptr((*device).name).to_owned();
-					let vendor = CStr::from_ptr((*device).vendor).to_owned();
-					let model = CStr::from_ptr((*device).model).to_owned();
-					let type_ = CStr::from_ptr((*device).type_).to_owned();
+					let name = cstring_from_ptr((*device).name);
+					let vendor = cstring_from_ptr((*device).vendor);
+					let model = cstring_from_ptr((*device).model);
+					let type_ = cstring_from_ptr((*device).type_);
 					Device {
 						name,
 						vendor,
@@ -167,9 +167,9 @@ impl DeviceHandle {
 			}
 
 			unsafe {
-				let title = CStr::from_ptr((*option_descriptor).title).to_owned();
-				let name = CStr::from_ptr((*option_descriptor).name).to_owned();
-				let desc = CStr::from_ptr((*option_descriptor).desc).to_owned();
+				let title = cstring_from_ptr((*option_descriptor).title);
+				let name = cstring_from_ptr((*option_descriptor).name);
+				let desc = cstring_from_ptr((*option_descriptor).desc);
 
 				let constraint = match (*option_descriptor).constraint_type {
 					sys::ConstraintType::None => OptionConstraint::None,
@@ -382,6 +382,13 @@ impl DeviceHandle {
 		}
 		Ok(opt_info)
 	}
+}
+
+fn cstring_from_ptr(ptr: *const std::os::raw::c_char) -> CString {
+	if ptr.is_null() {
+		return CString::default();
+	}
+	unsafe { CStr::from_ptr(ptr).to_owned() }
 }
 
 #[derive(Debug)]
